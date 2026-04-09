@@ -689,21 +689,21 @@ def _coerce_number(value: str, integer_only: bool = False):
 
 | 维度 | **hermes-agent** | **LangChain** | **Claude Code** | **OpenClaw** |
 |------|-----------------|---------------|-----------------|------------------------|
-| **注册方式** | 模块级 `register()` 调用 | `@tool` 装饰器 / BaseTool 子类 | 硬编码 tool 列表 | YAML 配置 + 动态加载 |
-| **元数据载体** | ToolEntry（`__slots__` 纯数据类） | BaseTool（多层继承 + Pydantic） | 内联 JSON schema | dict + JSON Schema |
-| **可用性检查** | check_fn 动态过滤 + 按 toolset 缓存 | 无内置机制 | 无（全量内置） | 容器启动时检查依赖 |
-| **async 处理** | 持久化 loop + per-thread loop | `arun()` / `ainvoke()` 双 API | N/A（全同步） | 全同步 |
-| **类型修正** | coerce_tool_args 统一转换 | Pydantic 自动 coerce | 内部处理 | 手动校验 |
-| **扩展机制** | 新 .py 文件 + registry + MCP + Plugin | 装饰器/子类 | 改源码 | Docker 镜像内预装 |
-| **工具发现** | importlib 硬编码列表 + 三层洋葱 | 自动从 class 收集 | 编译时确定 | 目录扫描 |
-| **hook 机制** | pre/post_tool_call 插件钩子 | callback system | 无 | 无 |
-| **设计倾向** | 朴素够用，防御性强 | 抽象优先，类型安全 | 封闭可控 | 运维思维，够用就行 |
+| **注册方式** | 模块级 `register()` 调用 | `@tool` 装饰器 / BaseTool 子类 | 硬编码 tool 列表 | MCP 协议 + Extensions 插件 |
+| **元数据载体** | ToolEntry（`__slots__` 纯数据类） | BaseTool（多层继承 + Pydantic） | 内联 JSON schema | JSON Schema（MCP tool definition） |
+| **可用性检查** | check_fn 动态过滤 + 按 toolset 缓存 | 无内置机制 | 无（全量内置） | 插件启动时自动注册可用工具 |
+| **async 处理** | 持久化 loop + per-thread loop | `arun()` / `ainvoke()` 双 API | N/A（全同步） | Node.js 原生 async |
+| **类型修正** | coerce_tool_args 统一转换 | Pydantic 自动 coerce | 内部处理 | JSON Schema 校验 |
+| **扩展机制** | 新 .py 文件 + registry + MCP + Plugin | 装饰器/子类 | 改源码 | npm 安装 Extension 插件 |
+| **工具发现** | importlib 硬编码列表 + 三层洋葱 | 自动从 class 收集 | 编译时确定 | 插件 manifest 自动发现 |
+| **hook 机制** | pre/post_tool_call 插件钩子 | callback system | 无 | before_tool_call + requireApproval |
+| **设计倾向** | 朴素够用，防御性强 | 抽象优先，类型安全 | 封闭可控 | 协议驱动，插件化扩展 |
 
 **hermes-agent 和 LangChain 的核心分歧**在于对抽象的态度。LangChain 相信好的抽象能让系统更灵活，所以给你 BaseTool → StructuredTool → @tool 三层。hermes-agent 相信**抽象是有成本的**——每多一层就多一个需要理解的概念、多一个出 bug 的位置。一个字典 + 一个 register 函数，够用就不加。
 
 **Claude Code** 走的是另一个极端——工具列表直接写死在代码里，没有注册机制。能这么做是因为 Claude Code 的工具集固定在 Bash、Read、Write、Edit 等少数几个，不需要动态增减。hermes-agent 要支持 20+ 个可选工具集 + MCP 外部工具 + 插件系统，写死不现实。
 
-**OpenClaw** 用 YAML 声明式配置，适合非开发者通过配置文件管理工具。代价是灵活性受限于 YAML 能表达的范围，复杂的 check_fn 逻辑放不进去。
+**OpenClaw** 基于 MCP 协议和 Extensions 插件体系管理工具。每个 Extension 通过 manifest 声明自己提供的工具，Gateway 启动时自动发现和注册。新增工具就是新增一个 npm 包，不需要改核心代码。hook 机制支持 `before_tool_call` 和 `requireApproval` 审批流。
 
 ![工具系统对比](../imgs/03-tool-system-comparison.png)
 
