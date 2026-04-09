@@ -6,29 +6,57 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="description" content="NousResearch/hermes-agent 源码系统化技术分析">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <style>
+    :root {
+      --theme-color: #7c3aed;
+    }
+    .sidebar-nav li a {
+      font-size: 14px;
+    }
+    .markdown-section {
+      max-width: 900px;
+    }
+    .markdown-section table {
+      display: table;
+      width: 100%;
+    }
+    .app-name-link {
+      font-size: 18px !important;
+      font-weight: bold;
+    }
+    .app-name-link img {
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+  </style>
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">Loading...</div>
   <script>
     window.$docsify = {
-      name: 'Hermes Agent 源码解剖',
+      name: '<img src="favicon.ico" width="24" height="24" alt="Hermes"> Hermes Agent 源码解剖',
+      nameLink: '/',
       repo: 'https://github.com/anneheartrecord/hermes-agent-anatomy',
       loadSidebar: true,
       subMaxLevel: 3,
       homepage: '_home.md',
       search: {
-        placeholder: '搜索',
-        noData: '没有结果',
+        placeholder: '搜索文档...',
+        noData: '没有找到结果',
         depth: 3
-      }
+      },
+      auto2top: true,
+      coverpage: false,
+      relativePath: false,
     }
   </script>
-  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
 </body>
 </html>
