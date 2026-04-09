@@ -667,18 +667,18 @@ def detect_zai_endpoint(api_key: str):
 | **消息格式** | OpenAI 内部 + 出口适配 | Anthropic 原生 | OpenAI 兼容 |
 | **凭证管理** | credential_pool 多凭证池化 | 单凭证 ~/.claude.json | Docker 环境变量注入 |
 | **选择策略** | 4 种 (fill_first/round_robin/random/least_used) | 无 (只有一个) | 无 (运维固定配置) |
-| **耗尽处理** | 冷却 + 自动降级到下一个 Provider | 报错，用户手动处理 | 依赖 K8s 健康检查 |
-| **OAuth 流程** | Device Code + PKCE + 独立会话 | 内置 setup-token | 无 (API key only) |
-| **辅助任务路由** | 7 级优先级自动检测链 | 无 (所有任务都用 Anthropic) | 无 (单模型做所有事) |
-| **认证持久化** | ~/.hermes/auth.json + 文件锁 | ~/.claude/.credentials.json | 容器 entrypoint.sh 注入 |
+| **耗尽处理** | 冷却 + 自动降级到下一个 Provider | 报错，用户手动处理 | 配置文件声明 fallback 链 |
+| **OAuth 流程** | Device Code + PKCE + 独立会话 | 内置 setup-token | Device Code + API key |
+| **辅助任务路由** | 7 级优先级自动检测链 | 无 (所有任务都用 Anthropic) | 无 (按配置使用固定 Provider) |
+| **认证持久化** | ~/.hermes/auth.json + 文件锁 | ~/.claude/.credentials.json | openclaw.json + auth.json |
 
 **Claude Code** 只需要对接自家 API，所以认证逻辑相对简单。它的复杂度集中在 thinking 块管理和内容过滤上。
 
-**OpenClaw** 跑在 Docker 容器里，每个实例只对接一个模型。凭证通过 `entrypoint.sh` 在容器启动时注入环境变量。灰度部署和实例管理由 Django 后端 `devops_gray_api_view.py` 控制，Provider 切换是运维操作。
+**OpenClaw** 采用声明式配置管理 Provider。凭证通过 `openclaw.json` 或 `openclaw onboard` 交互式引导配置，支持 OAuth device flow 和 API key 两种认证方式。多 Provider fallback 通过配置文件声明，运行时自动切换。
 
 **Hermes Agent** 是面向终端用户的桌面工具，必须处理用户有各种 Provider 凭证的情况。15 个 Provider 注册表、4 种池化策略、7 级辅助路由链，这些复杂度都来自一个产品决策：**让用户尽可能少配置，Agent 自己搞定。**
 
-这三个项目的 Provider 管理思路遵循一个规律：**产品的用户画像决定了 Provider 管理的复杂度。** 面向开发者的桌面 CLI 需要适配最多场景，企业内部平台只需要固定配置，一方产品只需要对接自己。
+这三个项目的 Provider 管理思路遵循一个规律：**产品的用户画像决定了 Provider 管理的复杂度。** 面向开发者的桌面 CLI 需要适配最多场景，多渠道平台需要声明式统一管理，一方产品只需要对接自己。
 
 ## 数字总结
 
