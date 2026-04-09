@@ -8,6 +8,8 @@
 ![Lines](https://img.shields.io/badge/analyzed-334K%20lines-red)
 ![AI](https://img.shields.io/badge/AI%20Powered-Claude%20Code-purple)
 
+> 📖 **在线阅读：** https://anneheartrecord.github.io/hermes-agent-anatomy/
+
 NousResearch/hermes-agent 是一个 33 万行 Python 代码的开源 AI Agent 框架。从 CLI 交互到 11 平台消息网关到 RL 训练数据采集，全部内置在一个单体仓库里。
 
 这个仓库是对 hermes-agent 源码的系统化技术分析，逐模块拆解，配有大量手绘风格技术插图。最后一篇将 Hermes Agent、OpenClaw、Claude Code 三个框架放在一起做了 13 个维度的对比。
