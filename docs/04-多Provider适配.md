@@ -661,7 +661,7 @@ def detect_zai_endpoint(api_key: str):
 
 三个项目对 Provider 管理的思路差异很大，反映了各自的产品定位。
 
-| 维度 | Hermes Agent | Claude Code | OpenClaw (TME-Claw) |
+| 维度 | Hermes Agent | Claude Code | OpenClaw |
 |------|-------------|-------------|---------------------|
 | **Provider 数量** | 15+ (注册表式) | 1 (Anthropic only) | 1 per instance (腾讯混元) |
 | **消息格式** | OpenAI 内部 + 出口适配 | Anthropic 原生 | OpenAI 兼容 |
@@ -674,7 +674,7 @@ def detect_zai_endpoint(api_key: str):
 
 **Claude Code** 只需要对接自家 API，所以认证逻辑相对简单。它的复杂度集中在 thinking 块管理和内容过滤上。
 
-**OpenClaw (TME-Claw)** 跑在 Docker 容器里，每个实例只对接一个模型。凭证通过 `entrypoint.sh` 在容器启动时注入环境变量。灰度部署和实例管理由 Django 后端 `devops_gray_api_view.py` 控制，Provider 切换是运维操作。
+**OpenClaw** 跑在 Docker 容器里，每个实例只对接一个模型。凭证通过 `entrypoint.sh` 在容器启动时注入环境变量。灰度部署和实例管理由 Django 后端 `devops_gray_api_view.py` 控制，Provider 切换是运维操作。
 
 **Hermes Agent** 是面向终端用户的桌面工具，必须处理用户有各种 Provider 凭证的情况。15 个 Provider 注册表、4 种池化策略、7 级辅助路由链，这些复杂度都来自一个产品决策：**让用户尽可能少配置，Agent 自己搞定。**
 

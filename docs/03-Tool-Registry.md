@@ -687,7 +687,7 @@ def _coerce_number(value: str, integer_only: bool = False):
 
 ## 9️⃣ 对比：四套工具系统的设计哲学
 
-| 维度 | **hermes-agent** | **LangChain** | **Claude Code** | **OpenClaw (TME-Claw)** |
+| 维度 | **hermes-agent** | **LangChain** | **Claude Code** | **OpenClaw** |
 |------|-----------------|---------------|-----------------|------------------------|
 | **注册方式** | 模块级 `register()` 调用 | `@tool` 装饰器 / BaseTool 子类 | 硬编码 tool 列表 | YAML 配置 + 动态加载 |
 | **元数据载体** | ToolEntry（`__slots__` 纯数据类） | BaseTool（多层继承 + Pydantic） | 内联 JSON schema | dict + JSON Schema |
@@ -703,7 +703,7 @@ def _coerce_number(value: str, integer_only: bool = False):
 
 **Claude Code** 走的是另一个极端——工具列表直接写死在代码里，没有注册机制。能这么做是因为 Claude Code 的工具集固定在 Bash、Read、Write、Edit 等少数几个，不需要动态增减。hermes-agent 要支持 20+ 个可选工具集 + MCP 外部工具 + 插件系统，写死不现实。
 
-**OpenClaw / TME-Claw** 用 YAML 声明式配置，适合非开发者通过配置文件管理工具。代价是灵活性受限于 YAML 能表达的范围，复杂的 check_fn 逻辑放不进去。
+**OpenClaw** 用 YAML 声明式配置，适合非开发者通过配置文件管理工具。代价是灵活性受限于 YAML 能表达的范围，复杂的 check_fn 逻辑放不进去。
 
 ![工具系统对比](../imgs/03-tool-system-comparison.png)
 
